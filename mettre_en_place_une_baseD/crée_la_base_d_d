@@ -1,0 +1,135 @@
+
+
+CREATE TABLE Fournisseur(
+   Id_Fournisseur INT AUTO_INCREMENT,
+   fou_nom VARCHAR(50) ,
+   fou_adresse VARCHAR(50) ,
+   fou_cp INT,
+   fou_ville VARCHAR(50) ,
+   fou_tel VARCHAR(20) ,
+   PRIMARY KEY(Id_Fournisseur)
+);
+
+CREATE TABLE Facture(
+   fa_id INT AUTO_INCREMENT,
+   fa_adresse VARCHAR(50) ,
+   fa_mode_paiement VARCHAR(50) ,
+   fa_date_emission DATE,
+   fa_tva INT,
+   fa_montant_TTC DECIMAL(9,2)  ,
+   fa_reglement BOOLEAN,
+   fa_date_limite_paiement VARCHAR(50) ,
+   PRIMARY KEY(fa_id)
+);
+
+CREATE TABLE Rubrique(
+   Id_Rubrique INT AUTO_INCREMENT,
+   Nom VARCHAR(50) ,
+   PRIMARY KEY(Id_Rubrique)
+);
+
+CREATE TABLE SousRubrique(
+   Id_Sous_Rubrique INT AUTO_INCREMENT,
+   Nom VARCHAR(50) ,
+   Id_Rubrique INT NOT NULL,
+   PRIMARY KEY(Id_Sous_Rubrique),
+   FOREIGN KEY(Id_Rubrique) REFERENCES Rubrique(Id_Rubrique)
+);
+
+CREATE TABLE Commercial(
+   Id_Commercial INT AUTO_INCREMENT,
+   commercial_nom VARCHAR(50) ,
+   commercial_prenom VARCHAR(50) ,
+   commercial_type INT,
+   commercial_tel VARCHAR(15) ,
+   PRIMARY KEY(Id_Commercial)
+);
+
+CREATE TABLE Client(
+   cli_id INT AUTO_INCREMENT,
+   Cli_nom VARCHAR(50) ,
+   Cli_prénom VARCHAR(50) ,
+   Cli_adresse_facturation VARCHAR(50) ,
+   Cli_adresse_livraison VARCHAR(50) ,
+   Cli_ville VARCHAR(50) ,
+   Cli_cp INT,
+   Cli_ref VARCHAR(50) ,
+   cli_type INT,
+   Cli_mail VARCHAR(50) ,
+   cli_fone VARCHAR(50) ,
+   Clien_Siret VARCHAR(50) ,
+   Cli_Coef VARCHAR(50) ,
+   Id_Commercial INT NOT NULL,
+   PRIMARY KEY(cli_id),
+   FOREIGN KEY(Id_Commercial) REFERENCES Commercial(Id_Commercial)
+);
+
+CREATE TABLE Produit(
+   Id_Produit INT AUTO_INCREMENT,
+   Pro_description VARCHAR(150) ,
+   Pro_libelle VARCHAR(30) ,
+   Pro_photo VARCHAR(50) ,
+   Pro_prix DECIMAL(9,2)  ,
+   Pro_Prix_ht DECIMAL(15,2)  ,
+   Id_Sous_Rubrique INT NOT NULL,
+   PRIMARY KEY(Id_Produit),
+   FOREIGN KEY(Id_Sous_Rubrique) REFERENCES SousRubrique(Id_Sous_Rubrique)
+);
+
+CREATE TABLE utilisateur(
+   user_id VARCHAR(50) ,
+   rôles VARCHAR(50) ,
+   email VARCHAR(50) ,
+   user_password VARCHAR(50) ,
+   Id_Commercial INT NOT NULL,
+   cli_id INT NOT NULL,
+   PRIMARY KEY(user_id),
+   UNIQUE(Id_Commercial),
+   UNIQUE(cli_id),
+   FOREIGN KEY(Id_Commercial) REFERENCES Commercial(Id_Commercial),
+   FOREIGN KEY(cli_id) REFERENCES Client(cli_id)
+);
+
+CREATE TABLE Commande(
+   Id_Commande INT AUTO_INCREMENT,
+   commande_date DATE,
+   commande_numeros VARCHAR(50) ,
+   Commande_reduc DECIMAL(4,2)  ,
+   Commande_date_facturation DATE,
+   Commande_Prix_tot DECIMAL(6,2)  ,
+   Commande_date_reglem VARCHAR(50) ,
+   Commande_Adresse VARCHAR(50) ,
+   fa_id INT NOT NULL,
+   cli_id INT NOT NULL,
+   PRIMARY KEY(Id_Commande),
+   UNIQUE(fa_id),
+   FOREIGN KEY(fa_id) REFERENCES Facture(fa_id),
+   FOREIGN KEY(cli_id) REFERENCES Client(cli_id)
+);
+
+CREATE TABLE Livraison(
+   Id_Livraison INT AUTO_INCREMENT,
+   li_num_bon VARCHAR(50) ,
+   li_adresse VARCHAR(50) ,
+   Id_Commande INT NOT NULL,
+   PRIMARY KEY(Id_Livraison),
+   FOREIGN KEY(Id_Commande) REFERENCES Commande(Id_Commande)
+);
+
+CREATE TABLE Livrer(
+   Id_Fournisseur INT,
+   Id_Produit INT,
+   PRIMARY KEY(Id_Fournisseur, Id_Produit),
+   FOREIGN KEY(Id_Fournisseur) REFERENCES Fournisseur(Id_Fournisseur),
+   FOREIGN KEY(Id_Produit) REFERENCES Produit(Id_Produit)
+);
+
+CREATE TABLE Ligne_commande(
+   Id_Commande INT,
+   Id_Produit INT,
+   quantite_commande INT NOT NULL,
+   prix_vente DECIMAL(7,2)  ,
+   PRIMARY KEY(Id_Commande, Id_Produit),
+   FOREIGN KEY(Id_Commande) REFERENCES Commande(Id_Commande),
+   FOREIGN KEY(Id_Produit) REFERENCES Produit(Id_Produit)
+);
