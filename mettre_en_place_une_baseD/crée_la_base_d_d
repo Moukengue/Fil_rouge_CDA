@@ -1,4 +1,5 @@
 
+Créer la base de données
 
 CREATE TABLE Fournisseur(
    Id_Fournisseur INT AUTO_INCREMENT,
@@ -133,3 +134,110 @@ CREATE TABLE Ligne_commande(
    FOREIGN KEY(Id_Commande) REFERENCES Commande(Id_Commande),
    FOREIGN KEY(Id_Produit) REFERENCES Produit(Id_Produit)
 );
+ou actuel 5/12/2023
+CREATE TABLE Ligne_commande(
+   Id_Commande INT,
+   Id_Produit INT,
+   quantite_commande INT NOT NULL,
+   prix_vente DECIMAL(7,2)  ,
+   id INT,
+   PRIMARY KEY(Id_Commande, Id_Produit),
+   UNIQUE(id),
+   FOREIGN KEY(Id_Commande) REFERENCES Commande(Id_Commande),
+   FOREIGN KEY(Id_Produit) REFERENCES Produit(Id_Produit)
+);ContientContient
+
+CREATE TABLE Livraison(
+   Id_Livraison INT AUTO_INCREMENT,
+   li_num_bon VARCHAR(50) ,
+   li_adresse VARCHAR(50) ,
+   Id_Commande INT NOT NULL,
+   PRIMARY KEY(Id_Livraison),
+   FOREIGN KEY(Id_Commande) REFERENCES Commande(Id_Commande)
+);   Id_Produit INT,
+   Id_Livraison INT,
+   qte_livree INT,
+   numero_bon_livraison VARCHAR(50) ,
+   date_livraison DATE,
+   PRIMARY KEY(Id_Produit, Id_Livraison),
+   UNIQUE(numero_bon_livraison),
+   FOREIGN KEY(Id_Produit) REFERENCES Produit(Id_Produit),
+   FOREIGN KEY(Id_Livraison) REFERENCES Livraison(Id_Livraison)
+);
+
+Alimenter la base
+                    Fournisseur
+INSERT INTO Fournisseur (fou_nom,fou_adresse,fou_cp,fou_ville,fou_tel)
+VALUES ('Macosso','4 Rue de condé',80000,'Amiens','00330659874532'),
+       ('Biville','3 Rue de Colver',80000,'Paris','00330736548129'),
+       ('Domingas','4 Rue Avril',80090,'Anges','003307569321454');
+
+       Rubrique
+       insert INTO Rubrique (nom)
+       VALUES('Mechés'),
+             ('Perruque'),
+             ('Lace Frontal');
+SousRubrique
+       INSERT INTO SousRubrique(id_Rubrique,nom)
+VALUES (1,'Lisse'),
+       (2,'Perruque boucle et lisse'),CREATE TABLE Livrer(
+   Id_Fournisseur INT,
+   Id_Produit INT,
+   PRIMARY KEY(Id_Fournisseur, Id_Produit),
+   FOREIGN KEY(Id_Fournisseur) REFERENCES Fournisseur(Id_Fournisseur),
+   FOREIGN KEY(Id_Produit) REFERENCES Produit(Id_Produit)
+);
+
+	Client
+
+   INSERT INTO Client (Cli_nom, Cli_prénom, Cli_adresse_facturation, Cli_adresse_livraison, Cli_ville, Cli_cp, Cli_ref, cli_type, Cli_mail, cli_fone, Clien_Siret, Cli_Coef, Id_Commercial)
+VALUES ('Dupont', 'Alice', '789 Billing St', '101 Shipping St', 'Townsville', 54321, 'ClientRef2', 2, 'alice.dupont@example.com', '987-654-3210', '987654321', '1.5', 1);
+       
+       INSERT INTO Client (Cli_nom, Cli_prénom, Cli_adresse_facturation, Cli_adresse_livraison, Cli_ville, Cli_cp, Cli_ref, cli_type, Cli_mail, cli_fone, Clien_Siret, Cli_Coef, Id_Commercial)
+VALUES ('Doe', 'John', '123 Main St', '456 Delivery St', 'Cityville', 12345, 'ClientRef1', 1, 'john.doe@example.com', '123-456-7890', '123456789', '1.2', 2);
+
+Produit
+INSERT INTO Produit (Pro_description, Pro_libelle, Pro_photo, Pro_prix, Pro_Prix_ht, Id_Sous_Rubrique)
+VALUES ('Tissage Brésilien Lisse de qualité supérieure,longueur de 10 à 34 pouces,pour tout les gouts!', 'Tissage Bresilien Lisse', 'tissage_bresilien_lisse.jpg', 79.99, 65.00, 1);
+
+INSERT INTO Produit (Pro_description, Pro_libelle, Pro_photo, Pro_prix, Pro_Prix_ht, Id_Sous_Rubrique)
+VALUES ('Perruque  de qualité supérieure à poter tout les jours', 'Perruque Courte Bouclée', 'perruque.jpg', 129.99, 110.00, 2);
+
+INSERT INTO Produit (Pro_description, Pro_libelle, Pro_photo, Pro_prix, Pro_Prix_ht, Id_Sous_Rubrique)
+VALUES ('Lace Frontal ondulé composé totalment de cheveux 100% naturels', 'Lace Frontal Ondulé', 'lace_frontal.jpg', 49.99, 40.00, 3);
+
+utilisateur
+INSERT INTO utilisateur (user_id, rôles, email, user_password, Id_Commercial, cli_id)
+VALUES ('user1', 'commercial', 'user1@example.com', 'password123', 1, 2);
+
+INSERT INTO utilisateur (user_id, rôles, email, user_password, Id_Commercial, cli_id)
+VALUES ('user2', 'client', 'user2@example.com', 'securepass',2, 1);
+Facture 
+INSERT INTO Facture (fa_adresse, fa_mode_paiement, fa_date_emission, fa_tva, fa_montant_TTC, fa_reglement, fa_date_limite_paiement)
+VALUES ('123 Main St', 'Credit Card', '2023-01-20', 20, 600.00, FALSE, '2023-02-10');
+
+
+INSERT INTO Facture (fa_adresse, fa_montant_TTC, fa_reglement)
+VALUES ('456 Delivery St', 300.00, TRUE);
+
+-
+
+INSERT INTO Facture (fa_adresse, fa_mode_paiement, fa_date_emission, fa_tva, fa_montant_TTC, fa_reglement, fa_date_limite_paiement)
+VALUES ('789 Billing St', 'Bank Transfer', '2023-03-15', 15, 450.00, FALSE, '2023-04-05');
+
+-
+
+INSERT INTO Facture (fa_adresse, fa_mode_paiement, fa_date_emission, fa_tva, fa_montant_TTC, fa_reglement, fa_date_limite_paiement)
+VALUES ('101 Payment St', 'Cash', '2023-04-01', 10, 800.00, TRUE, NULL);
+
+commande
+INSERT INTO Commande (commande_date,  commande_numeros, Commande_reduc, Commande_date_facturation, Commande_Prix_tot, Commande_date_reglem, Commande_Adresse, fa_id,cli_id)
+VALUES ('2023-03-15', 'CMD123', 0.1, '2023-01-20', 500.00, '2023-01-25', '123 Main St', 3, 1);
+
+INSERT INTO Commande (commande_date, commande_numeros, Commande_reduc, Commande_date_facturation, Commande_Prix_tot, Commande_date_reglem, Commande_Adresse, fa_id, cli_id)
+VALUES ('2023-01-20', 'CMD789', 0.05, '2023-04-05', 700.00, '2023-04-10', '789 Billing St', 4, 2);
+
+Livraison
+
+
+
